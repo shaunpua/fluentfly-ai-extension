@@ -1,0 +1,9 @@
+{
+    "name":"FluentFly AI",
+    "version":"1.0.0",
+    "manifest_version":3, 
+    "action":{
+        "default_popup":"index.html",
+        "default_title": "FluentFly AI Extension"
+    }
+}
