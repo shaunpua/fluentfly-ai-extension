@@ -1,9 +1,29 @@
 {
-    "name":"FluentFly AI",
-    "version":"1.0.0",
-    "manifest_version":3, 
-    "action":{
-        "default_popup":"index.html",
-        "default_title": "FluentFly AI Extension"
+  "name": "FluentFly AI",
+  "version": "1.0.0",
+  "manifest_version": 3,
+  "action": {
+    "default_popup": "index.html",
+    "default_title": "FluentFly AI Extension"
+  },
+  "permissions": [
+    "activeTab",
+    "cookies",
+    "declarativeContent",
+    "scripting",
+    "storage",
+    "tabs"
+  ],
+  "host_permissions": ["http://*/*", "https://*/*"],
+  "background": {
+    "service_worker": "src/background-scripts/background.ts",
+    "type": "module"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["src/contentscripts/main.tsx"],
+      "run_at": "document_end"
     }
+  ]
 }

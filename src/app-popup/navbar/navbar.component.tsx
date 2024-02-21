@@ -1,4 +1,4 @@
-import logo from "../assets/images/fluentfly-logo .webp";
+import logo from "../../assets/images/fluentfly-logo .webp";
 
 function NavbarComponent() {
   return (
