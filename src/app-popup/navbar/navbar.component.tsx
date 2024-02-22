@@ -1,6 +1,6 @@
 import logo from "../../assets/images/fluentfly-logo .webp";
 
-function NavbarComponent() {
+const NavbarComponent = () => {
   return (
     <div className="w-full h-16 flex items-center justify-between px-3 py-4 border-b border-b-gray-400">
       <div className="flex flex-row items-center justify-start">
@@ -12,6 +12,6 @@ function NavbarComponent() {
       </button>
     </div>
   );
-}
+};
 
 export default NavbarComponent;

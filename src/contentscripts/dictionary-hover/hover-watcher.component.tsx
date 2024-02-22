@@ -33,6 +33,7 @@ const HoverWatcherComponent = () => {
     debounce((e) => {
       setMousePosition({ x: e.clientX, y: e.clientY });
       const element = document.elementFromPoint(e.clientX, e.clientY);
+      // TODO: refactor to only detect or select a word, bug is selects whole text paragragh
       if (
         element &&
         element.textContent &&

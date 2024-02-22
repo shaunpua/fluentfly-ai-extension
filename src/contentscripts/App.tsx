@@ -1,12 +1,11 @@
-import "./App.css";
 import HoverWatcherComponent from "./dictionary-hover/hover-watcher.component";
 
-function App() {
+const App = () => {
   return (
     <>
       <HoverWatcherComponent />
     </>
   );
-}
+};
 
 export default App;

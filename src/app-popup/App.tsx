@@ -1,11 +1,9 @@
-//import { useState } from 'react';
 import HomepageComponent from "./home-page/home-page.component";
 import NavbarComponent from "./navbar/navbar.component";
+//TODO : make library imports and refactor naming of components
 import "./App.css";
 
-function App() {
-  //const [count, setCount] = useState(0)
-
+const App = () => {
   return (
     <div className="w-full flex flex-col overflow-y-auto">
       <NavbarComponent />
@@ -13,6 +11,6 @@ function App() {
       <HomepageComponent />
     </div>
   );
-}
+};
 
 export default App;
