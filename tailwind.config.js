@@ -12,6 +12,10 @@ export default {
         secondary: "#75F0BD",
         accent: "#49FDB2",
       },
+
+      zIndex: {
+        max: "2147483638",
+      },
     },
   },
   plugins: [],
