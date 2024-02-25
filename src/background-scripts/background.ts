@@ -24,7 +24,7 @@ const initializeDatabase = async () => {
 initializeDatabase();
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  if (message.action === "getData") {
+  if (message.action === "getListCDict") {
     db.entries
       .limit(10)
       .toArray()

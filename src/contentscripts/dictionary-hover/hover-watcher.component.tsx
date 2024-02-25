@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import HoverModalComponent from "./modal/hover-model.component";
+import getChineseDictionaryList from "../api/api-indexdb";
 
 const isChineseCharacter = (text: string) => {
   return /[\u4e00-\u9fa5]/.test(text);
@@ -65,15 +66,16 @@ const HoverWatcherComponent = () => {
 
   useEffect(() => {
     // TODO decouple this
-    const fetchData = async () => {
-      chrome.runtime.sendMessage({ action: "getData" }, (response) => {
-        console.log("response from background script", response.data);
-        // Handle the response
-        // setData(response);
-      });
+    const getChineseDictionaryListData = async () => {
+      try {
+        const data = await getChineseDictionaryList();
+        console.log("DATA FROM DEXIE DB ", data);
+      } catch (error) {
+        console.error("Failed to fetch dictionary entries:", error);
+      }
     };
 
-    fetchData();
+    getChineseDictionaryListData();
   }, []); // Empty dependency array means this runs once on mount
 
   const handleMouseMove = useCallback(
