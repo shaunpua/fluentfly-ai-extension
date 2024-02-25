@@ -42,6 +42,40 @@ const HoverWatcherComponent = () => {
   const [selectedWord, setSelectedWord] = useState("");
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
+  // const chosenWord = useLiveQuery(async () => {
+  //   //const chineseWord = await db.entries.where("id").equals(32).first();
+  //   const chineseWord = await db.entries.limit(10).toArray();
+
+  //   console.log("CHINESE WORD ENTRY IS", chineseWord);
+  //   return chineseWord;
+  // }, []);
+
+  // useEffect(() => {
+  //   const queryDb = async () => {
+  //     try {
+  //       const chineseWord = await db.entries.limit(10).toArray();
+  //       console.log("DATA RESULT ", chineseWord);
+  //     } catch {
+  //       console.log("ERROR SEARCHING DB");
+  //     }
+  //   };
+
+  //   queryDb();
+  // }, []);
+
+  useEffect(() => {
+    // TODO decouple this
+    const fetchData = async () => {
+      chrome.runtime.sendMessage({ action: "getData" }, (response) => {
+        console.log("response from background script", response.data);
+        // Handle the response
+        // setData(response);
+      });
+    };
+
+    fetchData();
+  }, []); // Empty dependency array means this runs once on mount
+
   const handleMouseMove = useCallback(
     debounce((e) => {
       setMousePosition({ x: e.clientX, y: e.clientY });

@@ -16,4 +16,4 @@ class MyChineseDictionaryDatabase extends Dexie {
 
 const db = new MyChineseDictionaryDatabase();
 
-export { db };
+export default db;

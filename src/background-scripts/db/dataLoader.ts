@@ -1,7 +1,7 @@
-import { db } from "./indexDB";
+import db from "./indexDB";
 import ChineseDictionaryEntry from "./schema";
 
-async function loadDictionaryEntriesFromJSON() {
+const loadDictionaryEntriesFromJSON = async () => {
   const url = chrome.runtime.getURL("data/cedict.json");
   const response = await fetch(url);
   const entries: ChineseDictionaryEntry[] = await response.json();
@@ -12,6 +12,6 @@ async function loadDictionaryEntriesFromJSON() {
   } catch (error) {
     console.error("Failed to add dictionary entries to the database", error);
   }
-}
+};
 
-export { loadDictionaryEntriesFromJSON };
+export default loadDictionaryEntriesFromJSON;
