@@ -1,6 +1,15 @@
 import { useState, useEffect, useCallback } from "react";
 import HoverModalComponent from "./modal/hover-model.component";
-import getChineseDictionaryList from "../api/api-indexdb";
+import { getChineseDictionarySelectedWord } from "../api/api-indexdb";
+import CDictionaryInstance from "../api/models";
+
+interface HoverModalState {
+  dictionary: CDictionaryInstance | null;
+  mousePosition: {
+    x: number;
+    y: number;
+  };
+}
 
 const isChineseCharacter = (text: string) => {
   return /[\u4e00-\u9fa5]/.test(text);
@@ -41,46 +50,37 @@ const getWordFromText = (text: string, offset: number) => {
 const HoverWatcherComponent = () => {
   const [isChinese, setIsChinese] = useState(false);
   const [selectedWord, setSelectedWord] = useState("");
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-
-  // const chosenWord = useLiveQuery(async () => {
-  //   //const chineseWord = await db.entries.where("id").equals(32).first();
-  //   const chineseWord = await db.entries.limit(10).toArray();
-
-  //   console.log("CHINESE WORD ENTRY IS", chineseWord);
-  //   return chineseWord;
-  // }, []);
-
-  // useEffect(() => {
-  //   const queryDb = async () => {
-  //     try {
-  //       const chineseWord = await db.entries.limit(10).toArray();
-  //       console.log("DATA RESULT ", chineseWord);
-  //     } catch {
-  //       console.log("ERROR SEARCHING DB");
-  //     }
-  //   };
-
-  //   queryDb();
-  // }, []);
+  const [modalData, setModalData] = useState<HoverModalState>({
+    dictionary: null,
+    mousePosition: { x: 0, y: 0 },
+  });
 
   useEffect(() => {
-    // TODO decouple this
-    const getChineseDictionaryListData = async () => {
+    const getChineseDictionarySelectedWordData = async (word: string) => {
       try {
-        const data = await getChineseDictionaryList();
-        console.log("DATA FROM DEXIE DB ", data);
+        const data = await getChineseDictionarySelectedWord(word);
+        setModalData((currentState) => ({
+          ...currentState,
+          dictionary: data,
+        }));
+        console.log("DATA FROM DEXIE DB selected", modalData, data);
       } catch (error) {
         console.error("Failed to fetch dictionary entries:", error);
       }
     };
-
-    getChineseDictionaryListData();
-  }, []); // Empty dependency array means this runs once on mount
+    if (selectedWord) {
+      console.log("SELECT WORD IS", selectedWord);
+      getChineseDictionarySelectedWordData(selectedWord);
+    }
+  }, [selectedWord, isChinese]);
 
   const handleMouseMove = useCallback(
     debounce((e) => {
-      setMousePosition({ x: e.clientX, y: e.clientY });
+      setModalData((currentState) => ({
+        ...currentState,
+        mousePosition: { x: e.clientX, y: e.clientY },
+      }));
+
       const element = document.elementFromPoint(
         e.clientX,
         e.clientY
@@ -115,13 +115,10 @@ const HoverWatcherComponent = () => {
 
   return (
     <>
-      {isChinese && (
+      {isChinese && modalData.dictionary && (
         <HoverModalComponent
-          selectedModal={{
-            word: selectedWord,
-            meaning: "Noun. This is the meaning of the word",
-            mousePosition,
-          }}
+          dictionary={modalData.dictionary!}
+          mousePosition={modalData.mousePosition}
         />
       )}
     </>

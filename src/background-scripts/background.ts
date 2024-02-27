@@ -34,3 +34,38 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     return true; // Keep the message channel open for the async response
   }
 });
+
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message.action === "getSelectedWordCDict") {
+    const selectedWord = message.word;
+
+    //TODO implement feature to segregate words, such as include
+
+    db.entries
+      .where("simplified")
+      .equals(selectedWord)
+      .or("traditional")
+      .equals(selectedWord)
+      .first()
+      .then((chineseWord) => {
+        if (chineseWord) {
+          sendResponse({ success: true, data: chineseWord });
+        } else {
+          sendResponse({
+            success: false,
+            data: null,
+            message: "Word not found.",
+          });
+        }
+      })
+      .catch((error) => {
+        console.error("Error querying the dexie:", error);
+        sendResponse({
+          success: false,
+          data: null,
+          message: "Error querying the database.",
+        });
+      });
+    return true;
+  }
+});

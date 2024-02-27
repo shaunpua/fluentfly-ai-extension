@@ -1,12 +1,17 @@
 import { FC } from "react";
 import SelectedWordModal from "../models";
+import CDictionaryInstance from "../../api/models";
 
 interface HoverModalProp {
-  selectedModal: SelectedWordModal;
+  dictionary: CDictionaryInstance;
+  mousePosition: { x: number; y: number };
 }
 
-const HoverModalComponent: FC<HoverModalProp> = ({ selectedModal }) => {
-  const { word, meaning, mousePosition } = selectedModal;
+const HoverModalComponent: FC<HoverModalProp> = ({
+  dictionary,
+  mousePosition,
+}) => {
+  const { simplified, traditional, english } = dictionary;
 
   return (
     <div
@@ -18,10 +23,10 @@ const HoverModalComponent: FC<HoverModalProp> = ({ selectedModal }) => {
       className="w-36 h-auto z-max flex flex-col items-start justify-center p-4 bg-primary-background-lt  rounded-lg shadow-lg overflow-hidden"
     >
       <h3 className=" text-lg text-primary-text-lt font-bold overflow-hidden">
-        {word}
+        {simplified}
       </h3>
       <p className=" text-base text-primary-text-lt overflow-hidden">
-        {meaning}
+        {english[0]}
       </p>
     </div>
   );
