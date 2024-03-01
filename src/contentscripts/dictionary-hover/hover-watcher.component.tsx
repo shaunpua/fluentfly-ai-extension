@@ -4,7 +4,7 @@ import { getChineseDictionarySelectedWord } from "../api/api-indexdb";
 import CDictionaryInstance from "../api/models";
 
 interface HoverModalState {
-  dictionary: CDictionaryInstance | null;
+  dictionary: CDictionaryInstance[] | null;
   mousePosition: {
     x: number;
     y: number;
@@ -13,6 +13,18 @@ interface HoverModalState {
 
 const isChineseCharacter = (text: string) => {
   return /[\u4e00-\u9fa5]/.test(text);
+};
+
+const selectHoveredWord = (text: string, offset: number): string => {
+  if (offset < 0 || offset >= text.length) return "";
+
+  let end = offset;
+  for (let i = 0; i < 5 && end < text.length; i++, end++) {
+    if (!isChineseCharacter(text[end])) {
+      break; // Stop if we encounter a non-Chinese character
+    }
+  }
+  return text.substring(offset, end);
 };
 
 const debounce = <F extends (...args: any[]) => any>(
@@ -32,21 +44,6 @@ const debounce = <F extends (...args: any[]) => any>(
   };
 };
 
-const getWordFromText = (text: string, offset: number) => {
-  // Split the text by spaces to get individual words
-  const words = text.split(/(\s+)/).filter((w) => w.trim().length > 0);
-
-  let cumulativeLength = 0;
-  // Find the word that contains the offset
-  for (const word of words) {
-    cumulativeLength += word.length;
-    if (offset <= cumulativeLength) {
-      return isChineseCharacter(word) ? word : "";
-    }
-  }
-  return "";
-};
-
 const HoverWatcherComponent = () => {
   const [isChinese, setIsChinese] = useState(false);
   const [selectedWord, setSelectedWord] = useState("");
@@ -59,28 +56,25 @@ const HoverWatcherComponent = () => {
     const getChineseDictionarySelectedWordData = async (word: string) => {
       try {
         const data = await getChineseDictionarySelectedWord(word);
+
+        data.sort((a, b) => b.simplified.length - a.simplified.length);
+        console.log("RESPONSE DB", data);
         setModalData((currentState) => ({
           ...currentState,
           dictionary: data,
         }));
-        console.log("DATA FROM DEXIE DB selected", modalData, data);
       } catch (error) {
         console.error("Failed to fetch dictionary entries:", error);
       }
     };
+
     if (selectedWord) {
-      console.log("SELECT WORD IS", selectedWord);
       getChineseDictionarySelectedWordData(selectedWord);
     }
-  }, [selectedWord, isChinese]);
+  }, [selectedWord]);
 
   const handleMouseMove = useCallback(
     debounce((e) => {
-      setModalData((currentState) => ({
-        ...currentState,
-        mousePosition: { x: e.clientX, y: e.clientY },
-      }));
-
       const element = document.elementFromPoint(
         e.clientX,
         e.clientY
@@ -89,19 +83,27 @@ const HoverWatcherComponent = () => {
       if (element && element.textContent) {
         const range = document.caretRangeFromPoint(e.clientX, e.clientY);
         if (range) {
-          const text = element.textContent;
-          const offset = range.startOffset;
-          const word = getWordFromText(text, offset);
+          const text = element.textContent || "";
+          const offset = Math.min(range.startOffset, text.length - 1);
+          const charUnderCursor = text[offset];
 
-          if (word && isChineseCharacter(word)) {
-            setIsChinese(true);
-            setSelectedWord(word);
-            return;
+          if (isChineseCharacter(charUnderCursor)) {
+            const word = selectHoveredWord(text, offset);
+            if (word) {
+              setIsChinese(true);
+              setSelectedWord(word);
+              setModalData((currentState) => ({
+                ...currentState,
+                mousePosition: { x: e.clientX, y: e.clientY },
+              }));
+              console.log("hover data", isChinese, selectedWord);
+              return;
+            }
           }
         }
       }
       setIsChinese(false);
-    }, 200), // 200ms debounce time
+    }, 200),
     []
   );
 

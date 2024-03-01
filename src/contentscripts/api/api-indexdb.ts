@@ -23,7 +23,7 @@ export const getChineseDictionaryList = async (): Promise<
 
 export const getChineseDictionarySelectedWord = async (
   selectedWord: string
-): Promise<CDictionaryInstance> => {
+): Promise<CDictionaryInstance[]> => {
   return new Promise((resolve, reject) => {
     chrome.runtime.sendMessage(
       { action: "getSelectedWordCDict", word: selectedWord },

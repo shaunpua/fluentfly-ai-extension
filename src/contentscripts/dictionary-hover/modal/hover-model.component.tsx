@@ -1,9 +1,9 @@
 import { FC } from "react";
-import SelectedWordModal from "../models";
+
 import CDictionaryInstance from "../../api/models";
 
 interface HoverModalProp {
-  dictionary: CDictionaryInstance;
+  dictionary: CDictionaryInstance[];
   mousePosition: { x: number; y: number };
 }
 
@@ -11,23 +11,34 @@ const HoverModalComponent: FC<HoverModalProp> = ({
   dictionary,
   mousePosition,
 }) => {
-  const { simplified, traditional, english } = dictionary;
-
   return (
     <div
       style={{
         left: `${mousePosition.x}px`,
-        top: `${mousePosition.y + 20}px`,
+        top: `${mousePosition.y + 40}px`,
         position: "absolute",
       }}
-      className="w-36 h-auto z-max flex flex-col items-start justify-center p-4 bg-primary-background-lt  rounded-lg shadow-lg overflow-hidden"
+      className="min-w-40  max-w-48 h-auto z-max flex flex-col items-start justify-center p-4 bg-primary-background-lt  rounded-lg shadow-lg overflow-hidden"
     >
-      <h3 className=" text-lg text-primary-text-lt font-bold overflow-hidden">
-        {simplified}
-      </h3>
-      <p className=" text-base text-primary-text-lt overflow-hidden">
-        {english[0]}
-      </p>
+      {Array.isArray(dictionary) &&
+        dictionary.map((word) => {
+          return (
+            <div key={word.id}>
+              <h3 className=" text-lg text-primary-text-lt font-bold overflow-hidden">
+                {word.simplified}
+                {word.traditional.trim() !== word.simplified.trim() &&
+                  ` ${word.traditional.trim()}`}
+              </h3>
+              <div className="w-5/6 flex items-center justify-start">
+                {word.english.map((meaning) => {
+                  return (
+                    <p className="pl-r text-xs text-primary-text-lt">{` • ${meaning}`}</p>
+                  );
+                })}
+              </div>
+            </div>
+          );
+        })}
     </div>
   );
 };
