@@ -32,7 +32,10 @@ const HoverModalComponent: FC<HoverModalProp> = ({
               <div className="w-5/6 flex items-center justify-start">
                 {word.english.map((meaning) => {
                   return (
-                    <p className="pl-r text-xs text-primary-text-lt">{` • ${meaning}`}</p>
+                    <p
+                      key={meaning[0]}
+                      className="pl-r text-xs text-primary-text-lt"
+                    >{` • ${meaning}`}</p>
                   );
                 })}
               </div>

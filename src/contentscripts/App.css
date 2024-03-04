@@ -1,5 +1,6 @@
 @import url("https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap");
 /* TODO: Find secondary font for creative purposes */
+/* TODO: limit scope of tailwind, to not affect current website but only popup modal */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

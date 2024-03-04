@@ -1,15 +1,7 @@
-// chrome.action.onClicked.addListener((tab) => {
-//   chrome.scripting.executeScript({
-//     target: { tab.id },
-//     files: ["contentScript.js"],
-//   });
-// });
-
-console.log("HELLO background script test");
-
 import db from "./db/indexDB";
 import loadDictionaryEntriesFromJSON from "./db/dataLoader";
 import ChineseDictionaryEntry from "./db/schema";
+import rootStateListener from "./state/rootListener";
 
 const initializeDatabase = async () => {
   const count = await db.entries.count();
@@ -18,8 +10,6 @@ const initializeDatabase = async () => {
     loadDictionaryEntriesFromJSON();
     console.log("performing data fetching from cedict.json");
   }
-  const chineseWords = await db.entries.limit(10).toArray();
-  console.log("WORDS FROM DB TEST", chineseWords);
 };
 
 initializeDatabase();
@@ -90,3 +80,6 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     return true;
   }
 });
+
+// Listener for Redux Store
+rootStateListener();
