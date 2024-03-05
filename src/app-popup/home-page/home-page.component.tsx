@@ -8,7 +8,7 @@ const HomepageComponent = () => {
 
   const fetchState = () => {
     chrome.runtime.sendMessage({ type: "GET_STATE" }, (response) => {
-      setIsHoverEnabled(response.dictionaryEnabled);
+      setIsHoverEnabled(response.state.dictionaryEnabled);
     });
   };
 
