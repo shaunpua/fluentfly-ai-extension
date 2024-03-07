@@ -7,9 +7,12 @@ const HomepageComponent = () => {
   const [isHoverEnabled, setIsHoverEnabled] = useState(false);
 
   const fetchState = () => {
-    chrome.runtime.sendMessage({ type: "GET_STATE" }, (response) => {
-      setIsHoverEnabled(response.state.dictionaryEnabled);
-    });
+    chrome.runtime.sendMessage(
+      { type: "SETTING_SELECTOR-DICTIONARY" },
+      (response) => {
+        setIsHoverEnabled(response.state);
+      }
+    );
   };
 
   const handleSwitchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -17,12 +20,15 @@ const HomepageComponent = () => {
     setIsHoverEnabled(newIsHoverEnabled); // Optimistically update the UI
 
     // Send the message to update the global state
-    chrome.runtime.sendMessage({ type: "SWITCH_DICTIONARY" }, (response) => {
-      if (response && !response.success) {
-        // If for any reason the update was not successful, revert to the previous state
-        setIsHoverEnabled(!newIsHoverEnabled);
+    chrome.runtime.sendMessage(
+      { type: "SETTING_SWITCH-DICTIONARY" },
+      (response) => {
+        if (response && !response.success) {
+          // If for any reason the update was not successful, revert to the previous state
+          setIsHoverEnabled(!newIsHoverEnabled);
+        }
       }
-    });
+    );
   };
 
   useEffect(() => {
