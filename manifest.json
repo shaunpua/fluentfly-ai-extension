@@ -12,8 +12,13 @@
     "declarativeContent",
     "scripting",
     "storage",
-    "tabs"
+    "tabs",
+    "identity"
   ],
+  "oauth2": {
+    "client_id": "404340329376-178luck8vigu3m4vrv0ip0etb4qjhn70.apps.googleusercontent.com",
+    "scopes": ["openid", "email", "profile"]
+  },
   "host_permissions": ["http://*/*", "https://*/*"],
   "background": {
     "service_worker": "src/background-script/background.ts",
